@@ -1,9 +1,18 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Model;
 
-class DatabaseSeeder extends Seeder
-{
+class DatabaseSeeder extends Seeder {
+
+    private $tables = [
+        'roles',
+        'users',
+        'products',
+        'categories',
+        'category_product',
+        'reviews'
+    ];
     /**
      * Run the database seeds.
      *
@@ -11,6 +20,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+
+        $this->clearDatabase();
+
+        Model::unguard();
+
+         $this->call('RoleTableSeeder');
+         $this->call('UserTableSeeder');
+         $this->call('ProductTableSeeder');
+         $this->call('CategoryTableSeeder');
+         $this->call('CategoryProductTableSeeder');
+         $this->call('ReviewTableSeeder');
     }
+
+    private function clearDatabase()
+    {
+        
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+        foreach ($this->tables as $tableName) {
+
+            DB::table($tableName)->truncate();
+        }
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+    }
+
 }
